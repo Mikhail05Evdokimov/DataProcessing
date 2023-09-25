@@ -1,3 +1,5 @@
+package ru.nsu.evdokimov;
+
 /**
  * Task 2
  */
@@ -7,6 +9,11 @@ public class Threads {
         ThreadPrinter firstThread = new ThreadPrinter();
         firstThread.start();
         firstThread.join();
+        System.out.println("World!");
+        System.out.println("World!");
+        System.out.println("World!");
+        System.out.println("World!");
+        System.out.println("World!");
         System.out.println("World!");
         System.out.println("World!");
         System.out.println("World!");
