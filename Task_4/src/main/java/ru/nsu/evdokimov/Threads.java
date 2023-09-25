@@ -1,3 +1,5 @@
+package ru.nsu.evdokimov;
+
 import static java.lang.Thread.sleep;
 
 /**
