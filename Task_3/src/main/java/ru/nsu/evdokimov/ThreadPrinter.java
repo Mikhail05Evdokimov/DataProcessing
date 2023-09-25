@@ -1,3 +1,5 @@
+package ru.nsu.evdokimov;
+
 import java.util.List;
 
 public class ThreadPrinter extends Thread{

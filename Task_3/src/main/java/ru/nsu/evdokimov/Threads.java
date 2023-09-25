@@ -1,3 +1,5 @@
+package ru.nsu.evdokimov;
+
 import java.util.ArrayList;
 import java.util.List;
 
