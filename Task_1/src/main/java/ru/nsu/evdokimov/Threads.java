@@ -8,15 +8,8 @@ public class Threads {
     public static void main(String[] args) {
         ThreadPrinter firstThread = new ThreadPrinter();
         firstThread.start();
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
+        for (int i = 0; i < 10; i++) {
+            System.out.println("World!");
+        }
     }
 }
