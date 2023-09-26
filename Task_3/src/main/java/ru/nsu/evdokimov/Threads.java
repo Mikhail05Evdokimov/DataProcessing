@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Threads {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
 
         List<String> firstList = new ArrayList<>();
         firstList.add("T1: Hello");
