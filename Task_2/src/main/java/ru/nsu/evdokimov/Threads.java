@@ -9,15 +9,8 @@ public class Threads {
         ThreadPrinter firstThread = new ThreadPrinter();
         firstThread.start();
         firstThread.join();
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
-        System.out.println("World!");
+        for (int i = 0; i < 10; i++) {
+            System.out.println("World!");
+        }
     }
 }
