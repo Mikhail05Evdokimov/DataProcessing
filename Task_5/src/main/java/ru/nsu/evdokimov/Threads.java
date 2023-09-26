@@ -12,6 +12,6 @@ public class Threads {
         ThreadPrinter firstThread = new ThreadPrinter();
         firstThread.start();
         sleep(2000);
-        firstThread.setInterruptFlag();
+        firstThread.interrupt();
     }
 }
