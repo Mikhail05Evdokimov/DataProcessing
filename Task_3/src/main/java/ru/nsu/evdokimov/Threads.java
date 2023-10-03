@@ -34,7 +34,6 @@ public class Threads {
         firstList.add("T4: World");
         firstList.add("T4: !");
         ThreadPrinter fourthThread = new ThreadPrinter(firstList);
-        firstList.clear();
 
         firstThread.start();
         secondThread.start();
