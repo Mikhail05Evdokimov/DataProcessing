@@ -13,7 +13,7 @@ public class ThreadPrinter extends Thread{
     @Override
     public void run(){
         for (String i : stringList) {
-            System.out.println(i);
+            System.out.println(i + ' ' + this.getName());
         }
     }
 }
