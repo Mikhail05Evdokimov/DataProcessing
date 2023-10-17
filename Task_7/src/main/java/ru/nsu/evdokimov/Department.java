@@ -31,10 +31,19 @@ public class Department {
             }
         }
         else {
-            for (int i = 0; i < workingSeconds; i++) {
-                calculationResult += 1.0/(identifier + i * threadsCount * 2 * sign);
-                sign *= -1;
+            if (sign == -1) {
+                for (int i = 0; i < workingSeconds; i++) {
+                    calculationResult += 1.0/(identifier * sign * (-1) + i * threadsCount * 2 * sign);
+                    sign *= -1;
+                }
             }
+            else {
+                for (int i = 0; i < workingSeconds; i++) {
+                    calculationResult += 1.0/(identifier * sign + i * threadsCount * 2 * sign);
+                    sign *= -1;
+                }
+            }
+
         }
         try {
 
