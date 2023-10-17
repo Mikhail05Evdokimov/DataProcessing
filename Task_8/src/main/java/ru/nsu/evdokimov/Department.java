@@ -29,15 +29,24 @@ public class Department {
             }
         }
         else {
-            for (int i = 0; Main.resource; i++) {
-                calculationResult += 1.0/(identifier + i * threadsCount * 2 * sign);
-                sign *= -1;
+            if (sign == -1) {
+                for (int i = 0; Main.resource; i++) {
+                    calculationResult += 1.0/(identifier * sign * (-1) + i * threadsCount * 2 * sign);
+                    sign *= -1;
+                }
             }
+            else {
+                for (int i = 0; Main.resource; i++) {
+                    calculationResult += 1.0/(identifier * sign + i * threadsCount * 2 * sign);
+                    sign *= -1;
+                }
+            }
+
         }
         try {
 
-                System.out.println(this.getIdentifier() + " Ready");
-                Main.berrier.await();
+            System.out.println(this.getIdentifier() + " Ready");
+            Main.berrier.await();
 
         } catch ( InterruptedException e) {
             e.printStackTrace();
