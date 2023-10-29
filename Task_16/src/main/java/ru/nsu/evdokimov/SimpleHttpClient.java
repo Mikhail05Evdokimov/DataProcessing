@@ -9,7 +9,7 @@ import java.net.URL;
 public class SimpleHttpClient {
 
     public static void main(String[] args) throws IOException {
-        args = new String[]{"https://table.nsu.ru/group/21215"};
+
         if (args.length != 1) {
             System.out.println("Usage: java SimpleHttpClient <url>");
             return;
