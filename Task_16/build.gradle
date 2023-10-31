@@ -7,7 +7,7 @@ group 'org.example'
 version '1.0'
 
 application {
-    mainClass = 'ru/nsu/evdokimov/SimpleHttpClient'
+    mainClass = 'ru/nsu/evdokimov/Main'
 }
 
 repositories {
