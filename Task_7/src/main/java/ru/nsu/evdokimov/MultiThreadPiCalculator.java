@@ -2,20 +2,19 @@ package ru.nsu.evdokimov;
 
 import java.util.concurrent.BrokenBarrierException;
 
-public class Department {
+public class MultiThreadPiCalculator {
     private final int identifier;
-    private final int workingSeconds;
+    private final int iterations;
     private final int threadsCount;
     private double calculationResult = 0;
 
-    public Department(final int identifier, int threadsCount) {
+    public MultiThreadPiCalculator(final int identifier, int threadsCount) {
         this.threadsCount = threadsCount;
         this.identifier = identifier;
-        this.workingSeconds = 200;//ThreadLocalRandom.current().nextInt(1, 6);
+        this.iterations = 200;
     }
     /**
-     * Симуляция работы длительностью в workingSeconds секунд.
-     * В данном случае просто вычисляем сумму.
+     * Вычисление на iterations итераций
      */
     public void performCalculations() {
         int sign;
@@ -26,19 +25,19 @@ public class Department {
             sign = -1;
         }
         if (threadsCount % 2 == 0) {
-            for (int i = 0; i < workingSeconds; i++) {
+            for (int i = 0; i < iterations; i++) {
                 calculationResult += 1.0/(identifier + i * threadsCount * 2 * sign);
             }
         }
         else {
             if (sign == -1) {
-                for (int i = 0; i < workingSeconds; i++) {
+                for (int i = 0; i < iterations; i++) {
                     calculationResult += 1.0/(identifier * sign * (-1) + i * threadsCount * 2 * sign);
                     sign *= -1;
                 }
             }
             else {
-                for (int i = 0; i < workingSeconds; i++) {
+                for (int i = 0; i < iterations; i++) {
                     calculationResult += 1.0/(identifier * sign + i * threadsCount * 2 * sign);
                     sign *= -1;
                 }
@@ -48,7 +47,7 @@ public class Department {
         try {
 
                 System.out.println(this.getIdentifier() + " Ready");
-                Main.berrier.await();
+                Main.barrier.await();
 
         } catch ( InterruptedException e) {
             e.printStackTrace();
@@ -57,7 +56,7 @@ public class Department {
         }
     }
     /**
-     * @return Уникальный идентификатор для отдела,
+     * @return Уникальный идентификатор для потока,
      * по которому мы можем отличить его от других.
      */
     public int getIdentifier() {
@@ -65,8 +64,8 @@ public class Department {
     }
     /**
      * ВАЖНО!
-     * Далеко не самый правильный способ вычисления и получения данных,
-     * но для демонстрации работы барьера пойдёт.
+     * Самый правильный способ вычисления и получения данных,
+     * и для демонстрации работы барьера подходит отлично.
      *
      * @return Результат вычислений.
      */
