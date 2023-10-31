@@ -1,6 +1,5 @@
 package ru.nsu.evdokimov;
 
-import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
 import java.util.Scanner;
@@ -10,7 +9,7 @@ import java.util.concurrent.CyclicBarrier;
 
 public class Main {
 
-    public static CyclicBarrier berrier;
+    public static CyclicBarrier barrier;
     public static volatile Boolean resource = true;
 
     public static void main (String[] args) throws InterruptedException, BrokenBarrierException {
@@ -25,12 +24,12 @@ public class Main {
 
         Scanner scan = new Scanner(System.in);
         int departmentsCount = scan.nextInt();
-        berrier = new CyclicBarrier(departmentsCount + 1);
-        Company company = new Company(departmentsCount);
-        Founder founder = new Founder(company);
-        founder.start();
-        berrier.await();
-        company.showCollaborativeResult();
+        barrier = new CyclicBarrier(departmentsCount + 1);
+        CalculationsManager calculationsManager = new CalculationsManager(departmentsCount);
+        ThreadsManager threadsManager = new ThreadsManager(calculationsManager);
+        threadsManager.start();
+        barrier.await();
+        calculationsManager.showCollaborativeResult();
     }
 
 }
