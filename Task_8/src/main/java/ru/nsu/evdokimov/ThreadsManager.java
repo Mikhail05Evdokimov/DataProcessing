@@ -3,6 +3,11 @@ package ru.nsu.evdokimov;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс, отвечающий за создание потоков,
+ * распределение объектов-вычислятелей между потоками
+ * и запуск потоков.
+ */
 public final class ThreadsManager {
 
     private final List<ThreadForPiCalculation> threadForPiCalculations;

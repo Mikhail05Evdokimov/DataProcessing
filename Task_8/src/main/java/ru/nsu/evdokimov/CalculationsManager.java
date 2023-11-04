@@ -2,6 +2,10 @@ package ru.nsu.evdokimov;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * Класс, отвечающий за создание объектов-вычислятей и вывод результата
+ */
 public final class CalculationsManager {
     private final List<MultiThreadPiCalculator> multiThreadPiCalculators;
     public CalculationsManager(final int threadsCount) {

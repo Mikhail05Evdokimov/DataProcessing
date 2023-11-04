@@ -1,5 +1,10 @@
 package ru.nsu.evdokimov;
 
+import java.util.concurrent.BrokenBarrierException;
+
+/**
+ * Класс, инициализирующий запуск вычислений на конкретном потоке
+ */
 public class ThreadForPiCalculation implements Runnable {
     private final MultiThreadPiCalculator multiThreadPiCalculator;
 
@@ -9,6 +14,10 @@ public class ThreadForPiCalculation implements Runnable {
 
     @Override
     public void run() {
-        multiThreadPiCalculator.performCalculations();
+        try {
+            multiThreadPiCalculator.performCalculations();
+        } catch (BrokenBarrierException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

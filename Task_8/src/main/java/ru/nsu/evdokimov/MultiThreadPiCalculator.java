@@ -2,6 +2,13 @@ package ru.nsu.evdokimov;
 
 import java.util.concurrent.BrokenBarrierException;
 
+import static java.lang.Thread.sleep;
+
+/**
+ * Класс, отвечающий за вычисление числа пи на конкретном потоке
+ * Экземпляры класса - объекты-вычислятели
+ */
+
 public class MultiThreadPiCalculator {
     private final int identifier;
     private final int threadsCount;
@@ -14,7 +21,7 @@ public class MultiThreadPiCalculator {
     /**
      * Выполнение вычислений пока не придёт стоп сигнал.
      */
-    public void performCalculations() {
+    public void performCalculations() throws BrokenBarrierException, InterruptedException {
         int sign;
         if (identifier > 0) {
             sign = 1;
@@ -24,18 +31,21 @@ public class MultiThreadPiCalculator {
         }
         if (threadsCount % 2 == 0) {
             for (int i = 0; Main.resource; i++) {
+                amortizationCheck(i);
                 calculationResult += 1.0/(identifier + i * threadsCount * 2 * sign);
             }
         }
         else {
             if (sign == -1) {
                 for (int i = 0; Main.resource; i++) {
+                    amortizationCheck(i);
                     calculationResult += 1.0/(identifier * sign * (-1) + i * threadsCount * 2 * sign);
                     sign *= -1;
                 }
             }
             else {
                 for (int i = 0; Main.resource; i++) {
+                    amortizationCheck(i);
                     calculationResult += 1.0/(identifier * sign + i * threadsCount * 2 * sign);
                     sign *= -1;
                 }
@@ -43,8 +53,8 @@ public class MultiThreadPiCalculator {
 
         }
         try {
-
-            System.out.println(this.getIdentifier() + " Ready");
+            sleep(10);
+            Main.amortizationBarrier.await();
             Main.barrier.await();
 
         } catch ( InterruptedException e) {
@@ -53,13 +63,14 @@ public class MultiThreadPiCalculator {
             throw new RuntimeException(e);
         }
     }
-    /**
-     * @return Уникальный идентификатор для потока,
-     * по которому мы можем отличить его от других.
-     */
-    public int getIdentifier() {
-        return identifier;
+
+    private void amortizationCheck(int i) throws BrokenBarrierException, InterruptedException {
+        if ((i + 1) % 10 == 0) {
+            sleep(10);
+            Main.amortizationBarrier.await();
+        }
     }
+
     /**
      * ВАЖНО!
      * Самый правильный способ вычисления и получения данных,
