@@ -1,19 +1,19 @@
 (ns Main)
 
-(defn string-generator [charList N]
-  (if (zero? N)
-    (list "")
-    (for [c charList
-          tail (string-generator charList (dec N))]
-      (str c tail))))
+(defn init-indexes [collections]
+  (reduce #(for [x %1 y %2] (conj x y)) [[]] collections))
+
+(defn string-generator [char-list n]
+  (for [indexes (apply init-indexes (list (repeat n (range (count char-list)))))]
+    (apply str (map #(nth char-list %) indexes))))
 
 (def no-repeats?
   (fn [s] (not-any? #(apply = %) (partition 2 1 s))))
 
-(defn main [charList N]
-  (filter no-repeats? (string-generator charList N)))
+(defn main [char-list N]
+  (filter no-repeats? (string-generator char-list N)))
 
-(def charList ["a" "b" "c"])
+(def char-list ["a" "b" "c"])
 (def N 3)
 
-(println(main charList N))
+(println(main char-list N))
