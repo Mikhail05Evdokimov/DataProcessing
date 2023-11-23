@@ -19,4 +19,7 @@
 
 (def primes (cons 2 (next-prime {} 3)) )
 
-(print (take 10 primes) )
+(defn get-prime [n] (if (<= n 0) nil (nth (take n primes) (- n 1))) )
+
+;(print (get-prime 10))
+;(print (take 6 primes))
