@@ -6,12 +6,8 @@ public final class CalculationsManager {
     private final List<MultiThreadPiCalculator> multiThreadPiCalculators;
     public CalculationsManager(final int departmentsCount) {
         this.multiThreadPiCalculators = new ArrayList<>(departmentsCount);
-        int startValueForCurrentThread = 3;
-        int sign = -1;
         for (int i = 0; i < departmentsCount; i++) {
-            multiThreadPiCalculators.add(i, new MultiThreadPiCalculator(startValueForCurrentThread*sign, departmentsCount));
-            startValueForCurrentThread += 2;
-            sign *= -1;
+            multiThreadPiCalculators.add(i, new MultiThreadPiCalculator(i+1, departmentsCount));
         }
     }
 

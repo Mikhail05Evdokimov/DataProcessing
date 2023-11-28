@@ -2,6 +2,8 @@ package ru.nsu.evdokimov;
 
 import java.util.concurrent.BrokenBarrierException;
 
+import static java.lang.Math.pow;
+
 public class MultiThreadPiCalculator {
     private final int identifier;
     private final int iterations;
@@ -17,33 +19,11 @@ public class MultiThreadPiCalculator {
      * Вычисление на iterations итераций
      */
     public void performCalculations() {
-        int sign;
-        if (identifier > 0) {
-            sign = 1;
-        }
-        else {
-            sign = -1;
-        }
-        if (threadsCount % 2 == 0) {
-            for (int i = 0; i < iterations; i++) {
-                calculationResult += 1.0/(identifier + i * threadsCount * 2 * sign);
-            }
-        }
-        else {
-            if (sign == -1) {
-                for (int i = 0; i < iterations; i++) {
-                    calculationResult += 1.0/(identifier * sign * (-1) + i * threadsCount * 2 * sign);
-                    sign *= -1;
-                }
-            }
-            else {
-                for (int i = 0; i < iterations; i++) {
-                    calculationResult += 1.0/(identifier * sign + i * threadsCount * 2 * sign);
-                    sign *= -1;
-                }
-            }
 
+        for (int i = 0; i < iterations; i++) {
+            calculationResult += pow(-1, identifier + (i * threadsCount)) / (2 * (identifier + i * threadsCount) + 1);
         }
+
         try {
 
                 System.out.println(this.getIdentifier() + " Ready");
