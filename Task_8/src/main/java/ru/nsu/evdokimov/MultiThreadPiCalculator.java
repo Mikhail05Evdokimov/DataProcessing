@@ -2,6 +2,7 @@ package ru.nsu.evdokimov;
 
 import java.util.concurrent.BrokenBarrierException;
 
+import static java.lang.Math.pow;
 import static java.lang.Thread.sleep;
 
 /**
@@ -22,36 +23,12 @@ public class MultiThreadPiCalculator {
      * Выполнение вычислений пока не придёт стоп сигнал.
      */
     public void performCalculations() throws BrokenBarrierException, InterruptedException {
-        int sign;
-        if (identifier > 0) {
-            sign = 1;
-        }
-        else {
-            sign = -1;
-        }
-        if (threadsCount % 2 == 0) {
-            for (int i = 0; Main.resource; i++) {
-                amortizationCheck(i);
-                calculationResult += 1.0/(identifier + i * threadsCount * 2 * sign);
-            }
-        }
-        else {
-            if (sign == -1) {
-                for (int i = 0; Main.resource; i++) {
-                    amortizationCheck(i);
-                    calculationResult += 1.0/(identifier * sign * (-1) + i * threadsCount * 2 * sign);
-                    sign *= -1;
-                }
-            }
-            else {
-                for (int i = 0; Main.resource; i++) {
-                    amortizationCheck(i);
-                    calculationResult += 1.0/(identifier * sign + i * threadsCount * 2 * sign);
-                    sign *= -1;
-                }
-            }
 
+        for (int i = 0; Main.resource; i++) {
+            amortizationCheck(i);
+            calculationResult += pow(-1, identifier + (i * threadsCount)) / (2 * (identifier + i * threadsCount) + 1);
         }
+
         try {
             sleep(10);
             Main.amortizationBarrier.await();
