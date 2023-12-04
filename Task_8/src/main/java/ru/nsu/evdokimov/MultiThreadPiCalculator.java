@@ -7,13 +7,15 @@ import static java.lang.Thread.sleep;
 
 /**
  * Класс, отвечающий за вычисление числа пи на конкретном потоке
- * Экземпляры класса - объекты-вычислятели
+ * Экземпляры класса - объекты-вычислители
  */
 
 public class MultiThreadPiCalculator {
     private final int identifier;
     private final int threadsCount;
     private double calculationResult = 0;
+    private int currentIteration;
+    private int maxIteration;
 
     public MultiThreadPiCalculator(final int identifier, int threadsCount) {
         this.threadsCount = threadsCount;
@@ -24,29 +26,36 @@ public class MultiThreadPiCalculator {
      */
     public void performCalculations() throws BrokenBarrierException, InterruptedException {
 
-        for (int i = 0; Main.resource; i++) {
-            amortizationCheck(i);
-            calculationResult += pow(-1, identifier + (i * threadsCount)) / (2 * (identifier + i * threadsCount) + 1);
+        for (currentIteration = 0; Main.resource; currentIteration++) {
+            calculationResult += pow(-1, identifier + (currentIteration * threadsCount)) / (2 * (identifier + currentIteration * threadsCount) + 1);
+        }
+
+        //Tells Main that this thread finished
+        try {
+            Main.firstAmortizationBarrier.await();
+        } catch (BrokenBarrierException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Main tells this thread the maximum iteration
+        try {
+            Main.secondAmortizationBarrier.await();
+        } catch (BrokenBarrierException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Amortization in case of difference in iterations in threads
+        for (currentIteration = currentIteration + 1; currentIteration < maxIteration; currentIteration++) {
+            calculationResult += pow(-1, identifier + (currentIteration * threadsCount)) / (2 * (identifier + currentIteration * threadsCount) + 1);
         }
 
         try {
-            sleep(10);
-            Main.amortizationBarrier.await();
             Main.barrier.await();
-
-        } catch ( InterruptedException e) {
-            e.printStackTrace();
         } catch (BrokenBarrierException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void amortizationCheck(int i) throws BrokenBarrierException, InterruptedException {
-        if ((i + 1) % 10 == 0) {
-            sleep(10);
-            Main.amortizationBarrier.await();
-        }
-    }
 
     /**
      * ВАЖНО!
@@ -57,6 +66,14 @@ public class MultiThreadPiCalculator {
      */
     public double getCalculationResult() {
         return calculationResult;
+    }
+
+    public int getCurrentIteration() {
+        return currentIteration;
+    }
+
+    public void setMaxIteration(int max) {
+        maxIteration = max;
     }
 }
 

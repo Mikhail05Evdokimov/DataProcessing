@@ -10,18 +10,22 @@ import java.util.List;
  */
 public final class ThreadsManager {
 
-    private final List<ThreadForPiCalculation> threadForPiCalculations;
+    private final List<ThreadForPiCalculation> threadsForPiCalculations;
     public ThreadsManager(final CalculationsManager calculationsManager) {
-        this.threadForPiCalculations = new ArrayList<>();
+        this.threadsForPiCalculations = new ArrayList<>();
         for (int i = 0; i < calculationsManager.getThreadsCount(); i++) {
-            threadForPiCalculations.add(new ThreadForPiCalculation(calculationsManager.getFreeThread(i)));
+            threadsForPiCalculations.add(new ThreadForPiCalculation(calculationsManager.getFreeThread(i)));
         }
     }
 
     public void start() {
-        for (final Runnable piThread : threadForPiCalculations) {
+        for (final Runnable piThread : threadsForPiCalculations) {
             new Thread(piThread).start();
         }
+    }
+
+    public List<ThreadForPiCalculation> getThreads() {
+        return threadsForPiCalculations;
     }
 
 }
