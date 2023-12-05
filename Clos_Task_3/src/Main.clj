@@ -9,8 +9,8 @@
       (apply concat (map deref futures)))))
 
 (def data (range))
-
+;бенчмарки на clojure
 (defn take-from-parallel-filter [n f coll] (take n (parallel-filter n f coll)))
 
-(time (doall (take-from-parallel-filter 4000000 even? data)))
-(time (doall (take 4000000 (filter even? data))))
+(time (doall (take-from-parallel-filter 400000 even? data)))
+(time (doall (take 400000 (filter even? data))))
