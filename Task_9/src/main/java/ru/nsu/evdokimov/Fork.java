@@ -16,27 +16,9 @@ public class Fork {
         return id;
     }
 
-    public boolean tryLock() {
-        return lock.tryLock();
+    public Lock getLock() {
+        return lock;
     }
 
-    public boolean getFork() {
-        synchronized (lock) {
-            if(lock.tryLock()) {
-                lock.lock();
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-    }
 
-    public void lock() {
-        lock.lock();
-    }
-
-    public void unlock() {
-        lock.unlock();
-    }
 }

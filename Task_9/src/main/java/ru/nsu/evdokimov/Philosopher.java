@@ -1,7 +1,5 @@
 package ru.nsu.evdokimov;
 
-import java.util.concurrent.Semaphore;
-
 public class Philosopher extends Thread{
 
     private int hunger;
@@ -49,20 +47,26 @@ public class Philosopher extends Thread{
     }
 
     private boolean getForks() throws InterruptedException {
-        if (leftFork.getFork()) {
-            if (rightFork.getFork()) {
-                sleep(eatTime);
-                System.out.println(this.getId() + " Got food");
-                hunger--;
-                rightFork.unlock();
-                leftFork.unlock();
-                return true;
-            }
-            else {
-                leftFork.unlock();
+
+        if (leftFork.getLock().tryLock()) {
+            try {
+                if (rightFork.getLock().tryLock()) {
+                    try {
+                        sleep(eatTime);
+                        hunger--;
+                        System.out.println("Philosopher " + id + " got food.");
+                        return true;
+                    } finally {
+                        rightFork.getLock().unlock();
+                    }
+                }
+                else {
+                    return false;
+                }
+            } finally {
+                leftFork.getLock().unlock();
             }
         }
-        Semaphore sem = new Semaphore(1, true);
         return false;
     }
 }
