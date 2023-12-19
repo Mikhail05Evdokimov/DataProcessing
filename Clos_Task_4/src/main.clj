@@ -100,17 +100,17 @@
 
   (let [bill (state :bill)
         buffer (state :buffer)
-        needed_amount (- (bill ware) (buffer ware))
+        needed_amount (- (bill ware) (buffer ware))         ; how much needs - how much have
         amount_old @storage-atom
-        amount_new (swap! storage-atom #(- % (min % needed_amount)))
-        new_buffer (assoc buffer ware (+ (buffer ware) (- amount_old amount_new)))]
+        amount_new (swap! storage-atom #(- % (min % needed_amount))) ; take stuff from storage
+        new_buffer (assoc buffer ware (+ (buffer ware) (- amount_old amount_new)))] ; add stuff to buffer
     (if (= bill new_buffer)
       (do
-        (Thread/sleep (state :duration))
-        (send ((state :target-storage) :worker) supply-msg amount)
+        (Thread/sleep (state :duration))                    ; delay
+        (send ((state :target-storage) :worker) supply-msg amount) ; notify target storage
         (assoc state :buffer (reduce-kv (fn [acc k _] (assoc acc k 0))
-                                        {} bill)))
-      (assoc state :buffer new_buffer))
+                                        {} bill)))          ; clear buffer
+      (assoc state :buffer new_buffer))                     ; else return buffer with added stuff
     ))
 
 
