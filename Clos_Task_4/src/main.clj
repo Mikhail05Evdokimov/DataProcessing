@@ -92,7 +92,7 @@
   ;; - try to retrieve some items from the 'storage-atom' if necessary
   ;; - if the retrieval is not successful, do not forget to handle validation exception correctly
   ;; - if the retrieval is successful, put wares into the internal ':buffer'
-  ;; - when there are enough wares of all types according to :bill, a new cycle must be started with given duratin;
+  ;; - when there are enough wares of all types according to :bill, a new cycle must be started with given duration;
   ;;   after it finished all the wares must be removed from the internal ':buffer' and ':target-storage' must be notified
   ;;   with 'supply-msg'
   ;; - return new agent state with possibly modified ':buffer' in any case!
@@ -101,8 +101,9 @@
   (let [bill (state :bill)
         buffer (state :buffer)
         needed_amount (- (bill ware) (buffer ware))
-        [a_old a_new] (swap-vals! storage-atom #(- % (min % needed_amount)))
-        new_buffer (assoc buffer ware (+ (buffer ware) (- a_old a_new)))]
+        amount_old @storage-atom
+        amount_new (swap! storage-atom #(- % (min % needed_amount)))
+        new_buffer (assoc buffer ware (+ (buffer ware) (- amount_old amount_new)))]
     (if (= bill new_buffer)
       (do
         (Thread/sleep (state :duration))
@@ -111,7 +112,6 @@
                                         {} bill)))
       (assoc state :buffer new_buffer))
     ))
-
 
 
   ;;;;;;;;;;;;;;;;;;;;;;;
@@ -131,7 +131,7 @@
 (def lumber-storage (storage "Lumber" 20 cuckoo-clock-factory))
 (def lumber-mill (source 5 4000 lumber-storage))
 (def ore-storage (storage "Ore" 10 metal-factory gears-factory))
-(def ore-mine (source 5 500 ore-storage))
+(def ore-mine (source 5 1500 ore-storage))
 
 ;;;runs sources and the whole process as the result
 (defn start []
