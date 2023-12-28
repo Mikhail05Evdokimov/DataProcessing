@@ -1,0 +1,22 @@
+<gg>
+  <person id="7454">
+    <wife value="P397949"/>
+    <fullname>
+      <first>Coooool</first>
+      <family>Maaaaan</family>
+    </fullname>
+  </person>
+  <person>
+    <mother>Gita Schnetter</mother>
+    <father>DAD</father>
+    <siblings val="P397019"/>
+  </person>
+  <person>
+    <siblings val="P407730"/>
+    <fullname>
+      <first>Lexie</first>
+      <family>Zaica</family>
+    </fullname>
+    <surname value="Zaic"/>
+  </person>
+</gg>
