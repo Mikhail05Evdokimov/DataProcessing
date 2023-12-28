@@ -12,6 +12,10 @@ public class ThreadForPiCalculation implements Runnable {
         this.multiThreadPiCalculator = multiThreadPiCalculator;
     }
 
+    public MultiThreadPiCalculator getMultiThreadPiCalculator() {
+        return multiThreadPiCalculator;
+    }
+
     @Override
     public void run() {
         try {
