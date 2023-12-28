@@ -161,6 +161,7 @@ public class Parser extends DefaultHandler{
         catch (IOException e) {
             throw new RuntimeException(e);
         }
+        PeopleRefactor.startRefactor();
     }
 
     private FullName nameParser(String name) {
