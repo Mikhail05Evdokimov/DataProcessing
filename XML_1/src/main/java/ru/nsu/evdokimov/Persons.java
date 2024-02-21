@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Persons {
 
-    private static final List<Person> people = new ArrayList<>();
+    private static List<Person> people = new ArrayList<>();
 
     public static void addPerson(Person person) {
         people.add(person);
@@ -13,6 +13,10 @@ public class Persons {
 
     public static List<Person> getAllPeople() {
         return people;
+    }
+
+    public static void setPeople(List<Person> people1) {
+        people = people1;
     }
 
 }

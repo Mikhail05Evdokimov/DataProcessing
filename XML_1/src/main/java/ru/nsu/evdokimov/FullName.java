@@ -2,8 +2,8 @@ package ru.nsu.evdokimov;
 
 public class FullName {
 
-    private String firstName;
-    private String familyName;
+    public String firstName;
+    public String familyName;
 
     public FullName(String name, String surName) {
         familyName = surName;

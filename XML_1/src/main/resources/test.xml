@@ -1,22 +1,40 @@
 <gg>
-  <person id="7454">
-    <wife value="P397949"/>
+  <person id="#787878">
+    <gender> F</gender>
     <fullname>
-      <first>Coooool</first>
-      <family>Maaaaan</family>
+      <first>Jonna</first>
+      <family>Chockley </family>
     </fullname>
   </person>
   <person>
-    <mother>Gita Schnetter</mother>
-    <father>DAD</father>
-    <siblings val="P397019"/>
+    <fullname>
+      <first>Jonna</first>
+      <family>Chockley </family>
+    </fullname>
+    <firstname value="Jonna"/>
+    <husband value="P407551"/>
   </person>
   <person>
-    <siblings val="P407730"/>
     <fullname>
-      <first>Lexie</first>
-      <family>Zaica</family>
+      <first>SON</first>
+      <family>MAN</family>
     </fullname>
-    <surname value="Zaic"/>
+    <mother>#787878</mother>
+  </person>
+  <person id="P407551">
+    <gender>M</gender>
+    <fullname>
+      <first>man(man)</first>
+      <family>MAN</family>
+    </fullname>
+  </person>
+  <person id="228337">
+    <gender>M</gender>
+    <fullname>
+      <first>jora</first>
+      <family>ye</family>
+    </fullname>
+    <husband value="228337"/>
+    <son>228337</son>
   </person>
 </gg>

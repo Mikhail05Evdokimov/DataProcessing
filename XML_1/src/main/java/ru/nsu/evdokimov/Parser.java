@@ -41,6 +41,11 @@ public class Parser extends DefaultHandler{
                     person.addMember("wife", attributes.getValue(0));
                 }
                 break;
+            case "husband":
+                if (attributes.getValue(0) != null) {
+                    person.addMember("husband", attributes.getValue(0));
+                }
+                break;
             case "siblings":
                 if (attributes.getValue(0) != null) {
                     person.addMember("siblings", attributes.getValue(0));
@@ -69,7 +74,7 @@ public class Parser extends DefaultHandler{
                 break;
             case "son":
                 if (attributes.getValue(0) != null) {
-                    person.addMember("son", attributes.getValue(0));
+                    person.addChild("son", attributes.getValue(0));
                 }
                 break;
             case "spouce":
@@ -90,7 +95,7 @@ public class Parser extends DefaultHandler{
                 break;
             case "daughter":
                 if (attributes.getValue(0) != null) {
-                    person.addMember("daughter", attributes.getValue(0));
+                    person.addChild("daughter", attributes.getValue(0));
                 }
                 break;
             case "father":
@@ -112,56 +117,41 @@ public class Parser extends DefaultHandler{
     @Override
     public void endElement(String namespaceURI, String localName, String qName) {
 
-            switch (qName) {
-                case "person":
-                    Persons.addPerson(person);
-                    break;
-                case "fullname":
-                    person.setName(fullName);
-                    break;
-                case "first":
-                    fullName.setFirstName(mock);
-                    break;
-                case "family":
-                    fullName.setFamilyName(mock);
-                    break;
-                case "wife":
-                    person.addMember("wife", mock);
-                    break;
-                case "mother":
-                    person.addMember("mother", mock);
-                    break;
-                case "siblings":
-                    person.addMember("siblings", mock);
-                    break;
-                case "surname":
-                    fullName.setFamilyName(mock);
-                    person.setName(fullName);
-                    break;
-                case "father":
-                    person.addMember("father", mock);
-                    break;
-                case "gender":
-                    person.setGender(mock);
-                    break;
-                default:
-                    break;
+        switch (qName) {
+            case "person" -> Persons.addPerson(person);
+            case "fullname" -> person.setName(fullName);
+            case "first" -> fullName.setFirstName(mock);
+            case "family" -> fullName.setFamilyName(mock);
+            case "wife" -> person.addMember("wife", mock);
+            case "husband" -> person.addMember("husband", mock);
+            case "mother" -> person.addMember("mother", mock);
+            case "siblings" -> person.addMember("siblings", mock);
+            case "son" -> person.addChild("son", mock);
+            case "daughter" -> person.addChild("daughter", mock);
+            case "surname" -> {
+                fullName.setFamilyName(mock);
+                person.setName(fullName);
             }
-
-
+            case "father" -> person.addMember("father", mock);
+            case "gender" -> person.setGender(mock);
+            default -> {
+            }
+        }
     }
 
     @Override
     public void endDocument() {
         System.out.println("Stop parse XML...");
-        try(FileWriter writer = new FileWriter(Objects.requireNonNull(this.getClass().getResource("/myFile.json")).getPath())) {
+        PeopleRefactor.startRefactor();
+        //try(FileWriter writer = new FileWriter(Objects.requireNonNull(this.getClass().getResource("/myFile.json")).getPath())) {
+        try(FileWriter writer = new FileWriter("myFile.json")) {
             Gson gson = new Gson();
             gson.toJson(Persons.getAllPeople(), writer);
         }
         catch (IOException e) {
             throw new RuntimeException(e);
         }
-        PeopleRefactor.startRefactor();
+
     }
 
     private FullName nameParser(String name) {

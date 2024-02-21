@@ -4,21 +4,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Person {
-    private String id;
-    private FullName name;
-    private String gender;
-    private String childrenNumber;
-    private String siblingNumber;
-    private Map<String, String> family;
+    public String id;
+    public FullName name;
+    public String gender;
+    public String childrenNumber;
+    public String siblingNumber;
+    public Family family;
 
     public Person() {
         name = new FullName();
-        family = new HashMap<>();
+        family = new Family();
+    }
+
+    public Person(String nullId) {
+        id = nullId;
+        name = new FullName();
+        family = new Family();
     }
 
     public void addMember(String member, String value) {
         if (!(value.contains("\n"))) {
-            family.put(member, value);
+            family.others.put(member, value);
+        }
+    }
+
+    public void addChild(String member, String value) {
+        if (!(value.contains("\n"))) {
+            family.addChild(member, value);
         }
     }
 
