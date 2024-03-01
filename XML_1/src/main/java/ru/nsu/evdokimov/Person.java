@@ -1,8 +1,8 @@
 package ru.nsu.evdokimov;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.xml.bind.annotation.XmlType;
 
+@XmlType(name = "person")
 public class Person {
     public String id;
     public FullName name;
@@ -32,6 +32,10 @@ public class Person {
         if (!(value.contains("\n"))) {
             family.addChild(member, value);
         }
+    }
+
+    public void addChild(Child child) {
+        family.addChild(child);
     }
 
     public void setId(String value) {

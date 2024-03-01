@@ -1,21 +1,27 @@
 package ru.nsu.evdokimov;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlRootElement(name = "document")
 public class Persons {
 
-    private static List<Person> people = new ArrayList<>();
+    @XmlElementWrapper()
+    @XmlElement(name = "person")
+    private List<Person> people = new ArrayList<>();
 
-    public static void addPerson(Person person) {
+    public void addPerson(Person person) {
         people.add(person);
     }
 
-    public static List<Person> getAllPeople() {
+    public List<Person> getAllPeople() {
         return people;
     }
 
-    public static void setPeople(List<Person> people1) {
+    public void setPeople(List<Person> people1) {
         people = people1;
     }
 

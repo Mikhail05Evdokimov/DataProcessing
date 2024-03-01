@@ -1,7 +1,5 @@
 package ru.nsu.evdokimov;
 
-import javafx.util.Pair;
-
 public class Child {
     public String childRole;
     public String name;
@@ -12,8 +10,8 @@ public class Child {
         }
         else {
             switch (gen) {
-                case "M" -> gen = "son";
-                case "F" -> gen = "daughter";
+                case "M", "son" -> gen = "son";
+                case "daughter", "F" -> gen = "daughter";
                 default -> gen = "child";
             }
         }

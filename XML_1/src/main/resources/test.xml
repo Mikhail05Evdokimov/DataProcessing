@@ -1,25 +1,35 @@
 <gg>
   <person id="#787878">
-    <gender> F</gender>
+    <gender>F</gender>
     <fullname>
       <first>Jonna</first>
-      <family>Chockley </family>
+      <family>Chockley</family>
     </fullname>
+    <parent val="old man"/>
   </person>
   <person>
     <fullname>
       <first>Jonna</first>
-      <family>Chockley </family>
+      <family>Chockley</family>
     </fullname>
     <firstname value="Jonna"/>
     <husband value="P407551"/>
   </person>
   <person>
+    <gender>M</gender>
     <fullname>
       <first>SON</first>
       <family>MAN</family>
     </fullname>
     <mother>#787878</mother>
+  </person>
+  <person>
+    <gender>F</gender>
+    <fullname>
+      <first>DAUGHTER</first>
+      <family>MAN</family>
+    </fullname>
+    <father>P407551</father>
   </person>
   <person id="P407551">
     <gender>M</gender>
@@ -34,7 +44,16 @@
       <first>jora</first>
       <family>ye</family>
     </fullname>
-    <husband value="228337"/>
     <son>228337</son>
+  </person>
+  <person id="228337">
+    <husband value="228337"/>
+    <wife value="228337"/>
+  </person>
+  <person id="000">
+    <firstname>NoName</firstname>
+    <husband value="UNKNOWN"/>
+    <wife value="UNKNOWN"/>
+    <parent val="UNKNOWN"/>
   </person>
 </gg>

@@ -1,18 +1,18 @@
 package ru.nsu.evdokimov;
 
-import com.google.gson.Gson;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Objects;
 
 public class Parser extends DefaultHandler{
 
     private Person person;
     private FullName fullName;
     private String mock;
+    private final Persons persons;
+
+    public Parser(Persons persons){
+        this.persons = persons;
+    }
 
     @Override
     public void startDocument() {
@@ -103,6 +103,16 @@ public class Parser extends DefaultHandler{
                     person.addMember("father", attributes.getValue(0));
                 }
                 break;
+            case "brother":
+                if (attributes.getValue(0) != null) {
+                    person.addMember("brother", attributes.getValue(0));
+                }
+                break;
+            case "id":
+                if (attributes.getValue(0) != null) {
+                    person.setId(attributes.getValue(0));
+                }
+                break;
         }
 
     }
@@ -118,7 +128,7 @@ public class Parser extends DefaultHandler{
     public void endElement(String namespaceURI, String localName, String qName) {
 
         switch (qName) {
-            case "person" -> Persons.addPerson(person);
+            case "person" -> persons.addPerson(person);
             case "fullname" -> person.setName(fullName);
             case "first" -> fullName.setFirstName(mock);
             case "family" -> fullName.setFamilyName(mock);
@@ -128,12 +138,22 @@ public class Parser extends DefaultHandler{
             case "siblings" -> person.addMember("siblings", mock);
             case "son" -> person.addChild("son", mock);
             case "daughter" -> person.addChild("daughter", mock);
-            case "surname" -> {
+            case "surname", "family-name" -> {
                 fullName.setFamilyName(mock);
                 person.setName(fullName);
             }
             case "father" -> person.addMember("father", mock);
             case "gender" -> person.setGender(mock);
+            case "children-number" -> person.setChildrenNumber(mock);
+            case "child" -> person.addChild("child", mock);
+            case "parent" -> person.addMember("parent", mock);
+            case "sister" -> person.addMember("sister", mock);
+            case "spouce" -> person.addMember("spouce", mock);
+            case "firstname" -> {
+                fullName.setFirstName(mock);
+                person.setName(fullName);
+            }
+
             default -> {
             }
         }
@@ -142,16 +162,6 @@ public class Parser extends DefaultHandler{
     @Override
     public void endDocument() {
         System.out.println("Stop parse XML...");
-        PeopleRefactor.startRefactor();
-        //try(FileWriter writer = new FileWriter(Objects.requireNonNull(this.getClass().getResource("/myFile.json")).getPath())) {
-        try(FileWriter writer = new FileWriter("myFile.json")) {
-            Gson gson = new Gson();
-            gson.toJson(Persons.getAllPeople(), writer);
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 
     private FullName nameParser(String name) {
