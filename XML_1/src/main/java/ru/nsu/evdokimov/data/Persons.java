@@ -1,4 +1,6 @@
-package ru.nsu.evdokimov;
+package ru.nsu.evdokimov.data;
+
+import ru.nsu.evdokimov.data.Person;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;

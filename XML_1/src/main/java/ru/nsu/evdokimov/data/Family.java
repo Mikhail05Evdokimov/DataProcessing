@@ -1,23 +1,18 @@
-package ru.nsu.evdokimov;
+package ru.nsu.evdokimov.data;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Family {
 
-    @XmlElementWrapper(name = "others")
     @XmlElement(name = "relative")
-    public Map<String, String> others;
-    @XmlElementWrapper(name = "children")
+    public Others others;
     @XmlElement(name = "child")
     public List<Child> children;
 
     public Family() {
-        others = new HashMap<>();
+        others = new Others();
         children = new ArrayList<>();
     }
 

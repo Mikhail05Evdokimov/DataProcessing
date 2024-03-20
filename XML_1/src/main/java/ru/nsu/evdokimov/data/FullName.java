@@ -1,4 +1,4 @@
-package ru.nsu.evdokimov;
+package ru.nsu.evdokimov.data;
 
 public class FullName {
 

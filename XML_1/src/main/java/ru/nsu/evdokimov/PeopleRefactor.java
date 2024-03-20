@@ -1,11 +1,14 @@
 package ru.nsu.evdokimov;
 
+import ru.nsu.evdokimov.data.Person;
+import ru.nsu.evdokimov.data.Persons;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class PeopleRefactor {
-
+    private int genId = 13;
     private final Persons persons;
 
     private final List<Person> newPeopleList = new ArrayList<>();
@@ -23,11 +26,14 @@ public class PeopleRefactor {
             }
         }
         newPeopleList.removeIf(i -> Objects.equals(i.id, "NULL"));
+
         System.out.println("Clone check finished");
-        for (var i : newPeopleList) {
-            selfCheck(i);
-        }
+
+        newPeopleList.parallelStream().forEach(this:: selfCheck);
+        newPeopleList.parallelStream().forEach(this:: idCheck);
+
         System.out.println("Self check finished");
+
         for (int i = 0; i < newPeopleList.size(); i++) {
             for (int j = 0; j < newPeopleList.size(); j++) {
                 if (i != j) {
@@ -38,15 +44,16 @@ public class PeopleRefactor {
                     }
                 }
             }
+            siblingsCheck(newPeopleList.get(i));
         }
         System.out.println("Relative check finished");
-        for (var i : newPeopleList) {
-            deepChildCheck(i);
-        }
+
+        newPeopleList.forEach(this::deepChildCheck);
+
         System.out.println("Deep relative check finished");
-        for (var i : newPeopleList) {
-            nullCheck(i);
-        }
+
+        newPeopleList.parallelStream().forEach(this::nullCheck);
+
         persons.setPeople(newPeopleList);
     }
 
@@ -114,7 +121,7 @@ public class PeopleRefactor {
             }
         }
         for (var i : trash) {
-            p.family.others.remove(i);
+            p.family.others.removeByKey(i);
         }
         p.family.children.removeIf(i -> Objects.equals(i.name, p.id));
         if (p.gender != null) {
@@ -250,6 +257,26 @@ public class PeopleRefactor {
             }
         }
         return null;
+    }
+
+    public void idCheck(Person p) {
+        if (p.id == null) {
+            p.id = generateID();
+        }
+    }
+
+    public String generateID() {
+        genId++;
+        return "ID" + genId;
+    }
+
+    public void siblingsCheck(Person p) {
+        if (p.family.others.containsKey("sibling")) {
+            var s = findById(p.family.others.get("sibling"));
+            if (s != null && !(s.family.others.containsKey("sibling"))) {
+                s.family.others.put("sibling", p.id);
+            }
+        }
     }
 
 

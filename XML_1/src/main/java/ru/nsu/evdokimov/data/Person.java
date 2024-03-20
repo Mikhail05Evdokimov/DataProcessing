@@ -1,4 +1,4 @@
-package ru.nsu.evdokimov;
+package ru.nsu.evdokimov.data;
 
 import javax.xml.bind.annotation.XmlType;
 

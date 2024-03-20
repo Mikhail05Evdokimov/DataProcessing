@@ -1,14 +1,21 @@
 package ru.nsu.evdokimov;
 
 import com.google.gson.Gson;
+import com.sun.xml.bind.v2.model.nav.Navigator;
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
+import com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator;
 import org.xml.sax.SAXException;
+import ru.nsu.evdokimov.data.*;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Result;
+import javax.xml.validation.SchemaFactory;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -47,8 +54,10 @@ public class Main {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             // сама сериализация
             marshaller.marshal(persons, writer);
-            //marshaller.marshal(cat, writer);
-            try(FileWriter fileWriter = new FileWriter("output.xml")) {
+
+            //XmlSchemaGenerator xmlSchemaGenerator = new XmlSchemaGenerator(persons.getClass());
+
+            try (FileWriter fileWriter = new FileWriter("output.xml")) {
                 fileWriter.write(writer.toString());
             } catch (IOException e) {
                 System.out.println("Writing error");

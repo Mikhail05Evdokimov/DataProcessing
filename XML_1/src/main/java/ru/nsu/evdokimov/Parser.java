@@ -2,6 +2,9 @@ package ru.nsu.evdokimov;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
+import ru.nsu.evdokimov.data.FullName;
+import ru.nsu.evdokimov.data.Person;
+import ru.nsu.evdokimov.data.Persons;
 
 public class Parser extends DefaultHandler{
 
@@ -48,7 +51,7 @@ public class Parser extends DefaultHandler{
                 break;
             case "siblings":
                 if (attributes.getValue(0) != null) {
-                    person.addMember("siblings", attributes.getValue(0));
+                    person.addMember("sibling", attributes.getValue(0));
                 }
                 break;
             case "surname":
@@ -135,7 +138,7 @@ public class Parser extends DefaultHandler{
             case "wife" -> person.addMember("wife", mock);
             case "husband" -> person.addMember("husband", mock);
             case "mother" -> person.addMember("mother", mock);
-            case "siblings" -> person.addMember("siblings", mock);
+            case "siblings" -> person.addMember("sibling", mock);
             case "son" -> person.addChild("son", mock);
             case "daughter" -> person.addChild("daughter", mock);
             case "surname", "family-name" -> {
