@@ -7,14 +7,13 @@ import com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator;
 import org.xml.sax.SAXException;
 import ru.nsu.evdokimov.data.*;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.SchemaOutputResolver;
+import javax.xml.bind.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Result;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -49,11 +48,19 @@ public class Main {
 
         //создание объекта Marshaller, который выполняет сериализацию
         try {
-            JAXBContext context = JAXBContext.newInstance(Persons.class, Person.class, FullName.class, Child.class, Family.class);
+            JAXBContext context = JAXBContext.newInstance(Persons.class, Person.class, FullName.class, Child.class, Family.class, Others.class, Relative.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             // сама сериализация
             marshaller.marshal(persons, writer);
+            context.generateSchema(new SchemaOutputResolver() {
+                @Override
+                public Result createOutput(String namespaceURI, String suggestedFileName)
+                    throws IOException {
+                    return new StreamResult(suggestedFileName);
+                }
+
+            });
 
             //XmlSchemaGenerator xmlSchemaGenerator = new XmlSchemaGenerator(persons.getClass());
 

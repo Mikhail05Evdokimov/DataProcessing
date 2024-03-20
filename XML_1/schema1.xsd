@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="document" type="persons"/>
+
+  <xs:complexType name="persons">
+    <xs:sequence>
+      <xs:element name="people" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="person" type="person" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="person">
+    <xs:sequence>
+      <xs:element name="id" type="xs:string" minOccurs="0"/>
+      <xs:element name="name" type="fullName" minOccurs="0"/>
+      <xs:element name="gender" type="xs:string" minOccurs="0"/>
+      <xs:element name="childrenNumber" type="xs:string" minOccurs="0"/>
+      <xs:element name="siblingNumber" type="xs:string" minOccurs="0"/>
+      <xs:element name="family" type="family" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="fullName">
+    <xs:sequence>
+      <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+      <xs:element name="familyName" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="family">
+    <xs:sequence>
+      <xs:element name="relative" type="relative" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="child" type="child" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="relative">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="role" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="child">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="role" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="others">
+    <xs:complexContent>
+      <xs:extension base="arrayList">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="arrayList">
+    <xs:complexContent>
+      <xs:extension base="abstractList">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractList" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractCollection">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractCollection" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+</xs:schema>
+
