@@ -3,12 +3,10 @@ package ru.nsu.evdokimov;
 import ru.nsu.evdokimov.data.Person;
 import ru.nsu.evdokimov.data.Persons;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class PeopleRefactor {
-    private int genId = 13;
+
     private final Persons persons;
 
     private final List<Person> newPeopleList = new ArrayList<>();
@@ -20,9 +18,13 @@ public class PeopleRefactor {
     public void startRefactor() {
         System.out.println("Start refactoring");
         newPeopleList.addAll(persons.getAllPeople());
+        persons.clear();
+        System.out.println("Start Clone check");
         for (int i = 0; i < newPeopleList.size(); i++) {
             for (int j = i+1; j < newPeopleList.size(); j++) {
-                cloneCheck(i, j);
+                if (!Objects.equals(newPeopleList.get(j).id, "NULL")) {
+                    cloneCheck(i, j);
+                }
             }
         }
         newPeopleList.removeIf(i -> Objects.equals(i.id, "NULL"));
@@ -30,18 +32,23 @@ public class PeopleRefactor {
         System.out.println("Clone check finished");
 
         newPeopleList.parallelStream().forEach(this:: selfCheck);
-        newPeopleList.parallelStream().forEach(this:: idCheck);
+        int deleteCounter = 0;
+        for (var pep : newPeopleList) {
+            if (pep.id == null) {
+                deleteCounter++;
+            }
+        }
+        System.out.println("No ID deleted: " + deleteCounter);
+        newPeopleList.removeIf(i -> Objects.equals(i.id, null));
 
         System.out.println("Self check finished");
 
         for (int i = 0; i < newPeopleList.size(); i++) {
             for (int j = 0; j < newPeopleList.size(); j++) {
                 if (i != j) {
-                    if (newPeopleList.get(i).id != null) {
-                        husbandCheck(i, j);
-                        wifeCheck(i, j);
-                        childCheck(i, j);
-                    }
+                    husbandCheck(i, j);
+                    wifeCheck(i, j);
+                    childCheck(i, j);
                 }
             }
             siblingsCheck(newPeopleList.get(i));
@@ -54,12 +61,14 @@ public class PeopleRefactor {
 
         newPeopleList.parallelStream().forEach(this::nullCheck);
 
+        System.out.println("Null check finished");
+
+        newPeopleList.parallelStream().forEach(this::doubleParentCheck);
+
         persons.setPeople(newPeopleList);
     }
 
-    private void merge(int i, int j) {
-        var a = newPeopleList.get(i);
-        var b = newPeopleList.get(j);
+    private void merge(Person a, Person b) {
         if (a.id == null && b.id != null) {
             a.setId(b.id);
         }
@@ -70,10 +79,16 @@ public class PeopleRefactor {
             a.setChildrenNumber(b.childrenNumber);
         }
         if (a.siblingNumber == null && b.siblingNumber != null) {
-            a.setGender(b.siblingNumber);
+            a.setSiblingNumber(b.siblingNumber);
         }
         if (a.name == null && b.name != null ) {
             a.setName(b.name);
+        }
+        if (a.name != null && a.name.firstName == null && b.name != null && b.name.firstName != null ) {
+            a.name.firstName = b.name.firstName;
+        }
+        if (a.name != null && a.name.familyName == null && b.name != null && b.name.familyName != null ) {
+            a.name.familyName = b.name.familyName;
         }
         for (var x : b.family.others.keySet()) {
             a.addMember(x, b.family.others.get(x));
@@ -81,8 +96,7 @@ public class PeopleRefactor {
         if (a.family.children.isEmpty()) {
             a.family.children = b.family.children;
         }
-        newPeopleList.set(i, a);
-        newPeopleList.set(j, new Person("NULL"));
+        b.setId("NULL");
     }
 
     private void cloneCheck(int i, int j) {
@@ -97,7 +111,7 @@ public class PeopleRefactor {
                     || a.childrenNumber == null || b.childrenNumber == null) {
                     if (Objects.equals(a.siblingNumber, b.siblingNumber)
                         || a.siblingNumber == null || b.siblingNumber == null) {
-                        merge(i, j);
+                        merge(a, b);
                     }
                 }
             }
@@ -135,24 +149,14 @@ public class PeopleRefactor {
     private void wifeCheck(int i, int j) {
         if (Objects.equals(newPeopleList.get(i).id, newPeopleList.get(j).family.others.get("husband")) &&
             !(newPeopleList.get(i).family.others.containsKey("wife"))) {
-            if (newPeopleList.get(j).id != null) {
                 newPeopleList.get(i).family.others.put("wife", newPeopleList.get(j).id);
-            }
-            else {
-                newPeopleList.get(i).family.others.put("wife", newPeopleList.get(j).name.toString());
-            }
         }
     }
 
     private void husbandCheck(int i, int j) {
         if (Objects.equals(newPeopleList.get(i).id, newPeopleList.get(j).family.others.get("wife")) &&
             !(newPeopleList.get(i).family.others.containsKey("husband"))) {
-            if (newPeopleList.get(j).id != null) {
                 newPeopleList.get(i).family.others.put("husband", newPeopleList.get(j).id);
-            }
-            else {
-                newPeopleList.get(i).family.others.put("husband", newPeopleList.get(j).name.toString());
-            }
         }
     }
 
@@ -160,7 +164,8 @@ public class PeopleRefactor {
         var a = newPeopleList.get(i);
         var b = newPeopleList.get(j);
         if (Objects.equals(a.id, b.family.others.get("father")) ||
-            Objects.equals(a.id, b.family.others.get("mother"))) {
+            Objects.equals(a.id, b.family.others.get("mother")) ||
+            Objects.equals(a.id, b.family.others.get("parent"))){
             if (b.id != null) {
                 if (Objects.equals(b.gender, "M")) {
                     a.family.addChild("son", b.id);
@@ -174,16 +179,20 @@ public class PeopleRefactor {
                     }
                 }
             }
-            else {
+        }
+        else {
+            if (Objects.equals(a.id, b.family.findChild("daughter")) ||
+                Objects.equals(a.id, b.family.findChild("son")) ||
+                Objects.equals(a.id, b.family.findChild("child"))) {
                 if (Objects.equals(b.gender, "M")) {
-                    a.family.addChild("son", b.name.firstName + ' ' + b.name.familyName);
+                    a.addMember("father", b.id);
                 }
                 else {
-                    if (Objects.equals(newPeopleList.get(j).gender, "F")) {
-                        a.family.addChild("daughter", b.name.firstName + ' ' + b.name.familyName);
+                    if (Objects.equals(b.gender, "F")) {
+                        a.addMember("mother", b.id);
                     }
                     else {
-                        a.family.addChild("child", b.name.firstName + ' ' + b.name.familyName);
+                        a.addMember("parent", b.id);
                     }
                 }
             }
@@ -225,6 +234,71 @@ public class PeopleRefactor {
         }
     }
 
+    public void doubleParentCheck(Person p) {
+        if (p.family != null && p.family.others != null) {
+            for (int i = 0; i < p.family.others.size(); i++) {
+                for (int j = i + 1; j < p.family.others.size(); j++) {
+                    if (p.family.others.get(i).getValue1().equals(p.family.others.get(j).getValue1())) {
+                        p.family.others.get(j).setValue("NULL");
+                    }
+                    if (p.family.others.get(i).getKey().equals(p.family.others.get(j).getKey())
+                        && (p.family.others.get(i).getKey().equals("father") || p.family.others.get(i).getKey().equals("mother"))) {
+                        p.family.others.get(j).setValue("NULL");
+                    }
+                }
+            }
+            p.family.others.removeIf(i -> i.getValue1().equals("NULL"));
+            if (p.family.others.containsKey("parent") &&
+                p.family.others.containsKey("mother") &&
+                p.family.others.containsKey("father")) {
+                var parent = findById(p.family.others.get("parent"));
+                if (parent != null) {
+                    if (parent.gender == null) {
+                        if (parent.name != null) {
+                            if (p.family.others.get("father").equals(parent.name.familyName + ' ' + parent.name.familyName)) {
+                                p.family.others.getO("father").setValue("NULL");
+                            } else {
+                                if ((p.family.others.get("mother").equals(parent.name.familyName + ' ' + parent.name.familyName))) {
+                                    p.family.others.getO("mother").setValue("NULL");
+                                } else {
+                                    badDays(p);
+                                }
+                            }
+                        }
+                        else {
+                            badDays(p);
+                        }
+                    }
+                    else {
+                        if (parent.gender.equals("M")) {
+                            p.family.others.getO("father").setValue("NULL");
+                        }
+                        else { p.family.others.getO("mother").setValue("NULL"); }
+                    }
+                }
+                else {
+                    badDays(p);
+                }
+            }
+            p.family.others.removeIf(i -> i.getValue1().equals("NULL"));
+        }
+    }
+
+    private void badDays(Person p) {
+        var parent = p.family.others.getO("parent");
+        if (parent.getValue1().contains(" ")) {
+            parent.setValue("NULL");
+        }
+        var mother = p.family.others.getO("mother");
+        if (mother.getValue1().contains(" ")) {
+            mother.setValue("NULL");
+        }
+        var father = p.family.others.getO("father");
+        if (father.getValue1().contains(" ")) {
+            father.setValue("NULL");
+        }
+    }
+
     public void nullCheck(Person p) {
         if (p.name.familyName == null && p.name.firstName == null) {
             p.name = null;
@@ -259,21 +333,22 @@ public class PeopleRefactor {
         return null;
     }
 
-    public void idCheck(Person p) {
-        if (p.id == null) {
-            p.id = generateID();
-        }
-    }
-
-    public String generateID() {
-        genId++;
-        return "ID" + genId;
-    }
-
     public void siblingsCheck(Person p) {
         if (p.family.others.containsKey("sibling")) {
             var s = findById(p.family.others.get("sibling"));
-            if (s != null && !(s.family.others.containsKey("sibling"))) {
+            if (s != null && s.family.others.notContainsSibling(p.id)) {
+                s.family.others.put("sibling", p.id);
+            }
+        }
+        if (p.family.others.containsKey("sister")) {
+            var s = findById(p.family.others.get("sister"));
+            if (s != null && s.family.others.notContainsSibling(p.id)) {
+                s.family.others.put("sibling", p.id);
+            }
+        }
+        if (p.family.others.containsKey("brother")) {
+            var s = findById(p.family.others.get("brother"));
+            if (s != null && s.family.others.notContainsSibling(p.id)) {
                 s.family.others.put("sibling", p.id);
             }
         }

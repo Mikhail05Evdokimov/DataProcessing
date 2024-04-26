@@ -5,7 +5,7 @@
       <first>Jonna</first>
       <family>Chockley</family>
     </fullname>
-    <parent val="old man"/>
+  <parent>old man</parent>
   </person>
   <person>
     <fullname>
@@ -30,6 +30,7 @@
       <family>MAN</family>
     </fullname>
     <father>P407551</father>
+    <brother>ID15</brother>
   </person>
   <person id="P407551">
     <gender>M</gender>
@@ -55,5 +56,29 @@
     <husband value="UNKNOWN"/>
     <wife value="UNKNOWN"/>
     <parent val="UNKNOWN"/>
+  </person>
+  <person id="old man">
+    <firstname>Old Man</firstname>
+    <daughter>#787878</daughter>
+  </person>
+  <person id="old women">
+    <firstname>Old Women</firstname>
+    <daughter>#787878</daughter>
+  </person>
+  <person id="old man">
+    <firstname>Old Man</firstname>
+    <daughter>#787878</daughter>
+  </person>
+  <person id="old women">
+    <firstname>Old Women</firstname>
+    <daughter>#787878</daughter>
+  </person>
+  <person id="old women">
+    <firstname>Old Women</firstname>
+    <daughter>#787878</daughter>
+  </person>
+  <person id="old man">
+    <firstname>Old Man</firstname>
+    <daughter>#787878</daughter>
   </person>
 </gg>

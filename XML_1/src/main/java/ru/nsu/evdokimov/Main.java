@@ -1,20 +1,14 @@
 package ru.nsu.evdokimov;
 
-import com.google.gson.Gson;
-import com.sun.xml.bind.v2.model.nav.Navigator;
-import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
-import com.sun.xml.bind.v2.schemagen.XmlSchemaGenerator;
 import org.xml.sax.SAXException;
 import ru.nsu.evdokimov.data.*;
 
-import javax.xml.bind.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.Result;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -29,19 +23,11 @@ public class Main {
         Persons persons = new Persons();
         Parser saxParser = new Parser(persons);
 
-        try(var is = Main.class.getClassLoader().getResourceAsStream("test.xml")) {
+        try(var is = Main.class.getClassLoader().getResourceAsStream("people.xml")) {
             parser.parse(is, saxParser);
         }
         PeopleRefactor peopleRefactor = new PeopleRefactor(persons);
         peopleRefactor.startRefactor();
-
-        try(FileWriter writer = new FileWriter("myFile.json")) {
-            Gson gson = new Gson();
-            gson.toJson(persons, writer);
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
         //писать результат сериализации будем в Writer(StringWriter)
         StringWriter writer = new StringWriter();
@@ -53,16 +39,6 @@ public class Main {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             // сама сериализация
             marshaller.marshal(persons, writer);
-            context.generateSchema(new SchemaOutputResolver() {
-                @Override
-                public Result createOutput(String namespaceURI, String suggestedFileName)
-                    throws IOException {
-                    return new StreamResult(suggestedFileName);
-                }
-
-            });
-
-            //XmlSchemaGenerator xmlSchemaGenerator = new XmlSchemaGenerator(persons.getClass());
 
             try (FileWriter fileWriter = new FileWriter("output.xml")) {
                 fileWriter.write(writer.toString());

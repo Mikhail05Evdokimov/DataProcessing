@@ -130,21 +130,24 @@ public class Parser extends DefaultHandler{
     @Override
     public void endElement(String namespaceURI, String localName, String qName) {
 
+        if(mock.startsWith(" ")) {
+            mock = mock.substring(1);
+        }
+        if(mock.endsWith(" ")) {
+            mock = mock.substring(0, mock.length()-1);
+        }
+
         switch (qName) {
-            case "person" -> persons.addPerson(person);
+            case "person" -> { person.setName(fullName); persons.addPerson(person); }
             case "fullname" -> person.setName(fullName);
-            case "first" -> fullName.setFirstName(mock);
-            case "family" -> fullName.setFamilyName(mock);
+            case "first", "firstname" -> fullName.setFirstName(mock);
+            case "family", "surname", "family-name" -> fullName.setFamilyName(mock);
             case "wife" -> person.addMember("wife", mock);
             case "husband" -> person.addMember("husband", mock);
             case "mother" -> person.addMember("mother", mock);
             case "siblings" -> person.addMember("sibling", mock);
             case "son" -> person.addChild("son", mock);
             case "daughter" -> person.addChild("daughter", mock);
-            case "surname", "family-name" -> {
-                fullName.setFamilyName(mock);
-                person.setName(fullName);
-            }
             case "father" -> person.addMember("father", mock);
             case "gender" -> person.setGender(mock);
             case "children-number" -> person.setChildrenNumber(mock);
@@ -152,10 +155,7 @@ public class Parser extends DefaultHandler{
             case "parent" -> person.addMember("parent", mock);
             case "sister" -> person.addMember("sister", mock);
             case "spouce" -> person.addMember("spouce", mock);
-            case "firstname" -> {
-                fullName.setFirstName(mock);
-                person.setName(fullName);
-            }
+            case "brother" -> person.addMember("brother", mock);
 
             default -> {
             }

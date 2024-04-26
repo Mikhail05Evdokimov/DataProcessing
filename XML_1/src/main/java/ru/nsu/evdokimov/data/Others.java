@@ -7,7 +7,16 @@ public class Others extends ArrayList<Relative> {
     public String get(String key) {
         for (var i : this) {
             if (Objects.equals(i.getKey(), key)) {
-                return i.getValue();
+                return i.getValue1();
+            }
+        }
+        return null;
+    }
+
+    public Relative getO(String key) {
+        for (var i : this) {
+            if (Objects.equals(i.getKey(), key)) {
+                return i;
             }
         }
         return null;
@@ -41,5 +50,23 @@ public class Others extends ArrayList<Relative> {
                 break;
             }
         }
+    }
+
+    public boolean checkAll(String id) {
+        for (var mem : this) {
+            if (Objects.equals(mem.getValue1(), id)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean notContainsSibling(String id) {
+        for (var sib : this) {
+            if (Objects.equals(sib.getValue1(), id)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

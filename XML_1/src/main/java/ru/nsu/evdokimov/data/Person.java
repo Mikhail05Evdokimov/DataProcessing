@@ -1,10 +1,12 @@
 package ru.nsu.evdokimov.data;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name = "person")
 public class Person {
     public String id;
+    @XmlElement
     public FullName name;
     public String gender;
     public String childrenNumber;
@@ -24,14 +26,16 @@ public class Person {
 
     public void addMember(String member, String value) {
         if (!(value.contains("\n"))) {
-            family.others.put(member, value);
+            if (family.others.checkAll(value) && !(family.others.containsKey("parent"))) {
+                family.others.put(member, value);
+            }
         }
     }
 
     public void addChild(String member, String value) {
-        if (!(value.contains("\n"))) {
+       if (!(value.contains("\n"))) {
             family.addChild(member, value);
-        }
+       }
     }
 
     public void addChild(Child child) {
@@ -65,5 +69,4 @@ public class Person {
             siblingNumber = value;
         }
     }
-
 }
