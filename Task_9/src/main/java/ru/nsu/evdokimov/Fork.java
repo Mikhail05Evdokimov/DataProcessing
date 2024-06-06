@@ -19,6 +19,4 @@ public class Fork {
     public Lock getLock() {
         return lock;
     }
-
-
 }
