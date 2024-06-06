@@ -41,22 +41,22 @@ public class Parser extends DefaultHandler{
                 break;
             case "wife":
                 if (attributes.getValue(0) != null) {
-                    person.addMember("wife", attributes.getValue(0));
+                    person.addMember("wife", cutTabs(attributes.getValue(0)));
                 }
                 break;
             case "husband":
                 if (attributes.getValue(0) != null) {
-                    person.addMember("husband", attributes.getValue(0));
+                    person.addMember("husband", cutTabs(attributes.getValue(0)));
                 }
                 break;
             case "siblings":
                 if (attributes.getValue(0) != null) {
-                    person.addMember("sibling", attributes.getValue(0));
+                    person.addMember("sibling", cutTabs(attributes.getValue(0)));
                 }
                 break;
             case "surname":
                 if (attributes.getValue(0) != null) {
-                    fullName.setFamilyName(attributes.getValue(0));
+                    fullName.setFamilyName(cutTabs(attributes.getValue(0)));
                     person.setName(fullName);
                 }
                 break;
@@ -67,7 +67,7 @@ public class Parser extends DefaultHandler{
                 break;
             case "parent":
                 if (attributes.getValue(0) != null) {
-                    person.addMember("parent", attributes.getValue(0));
+                    person.addMember("parent", cutTabs(attributes.getValue(0)));
                 }
                 break;
             case "siblings-number":
@@ -77,43 +77,43 @@ public class Parser extends DefaultHandler{
                 break;
             case "son":
                 if (attributes.getValue(0) != null) {
-                    person.addChild("son", attributes.getValue(0));
+                    person.addChild("son", cutTabs(attributes.getValue(0)));
                 }
                 break;
             case "spouce":
                 if (attributes.getValue(0) != null) {
-                    person.addMember("spouce", attributes.getValue(0));
+                    person.addMember("spouce", cutTabs(attributes.getValue(0)));
                 }
                 break;
             case "gender":
                 if (attributes.getValue(0) != null) {
-                    person.setGender(attributes.getValue(0));
+                    person.setGender(cutTabs(attributes.getValue(0)));
                 }
                 break;
             case "firstname":
                 if (attributes.getValue(0) != null) {
-                    fullName.setFirstName(attributes.getValue(0));
+                    fullName.setFirstName(cutTabs(attributes.getValue(0)));
                     person.setName(fullName);
                 }
                 break;
             case "daughter":
                 if (attributes.getValue(0) != null) {
-                    person.addChild("daughter", attributes.getValue(0));
+                    person.addChild("daughter", cutTabs(attributes.getValue(0)));
                 }
                 break;
             case "father":
                 if (attributes.getValue(0) != null) {
-                    person.addMember("father", attributes.getValue(0));
+                    person.addMember("father", cutTabs(attributes.getValue(0)));
                 }
                 break;
             case "brother":
                 if (attributes.getValue(0) != null) {
-                    person.addMember("brother", attributes.getValue(0));
+                    person.addMember("brother", cutTabs(attributes.getValue(0)));
                 }
                 break;
             case "id":
                 if (attributes.getValue(0) != null) {
-                    person.setId(attributes.getValue(0));
+                    person.setId(cutTabs(attributes.getValue(0)));
                 }
                 break;
         }
@@ -130,12 +130,7 @@ public class Parser extends DefaultHandler{
     @Override
     public void endElement(String namespaceURI, String localName, String qName) {
 
-        if(mock.startsWith(" ")) {
-            mock = mock.substring(1);
-        }
-        if(mock.endsWith(" ")) {
-            mock = mock.substring(0, mock.length()-1);
-        }
+        mock = cutTabs(mock);
 
         switch (qName) {
             case "person" -> { person.setName(fullName); persons.addPerson(person); }
@@ -168,6 +163,7 @@ public class Parser extends DefaultHandler{
     }
 
     private FullName nameParser(String name) {
+        name = cutTabs(name);
         String first = "";
         int i = 0;
         while (name.charAt(i) != ' ') {
@@ -176,6 +172,16 @@ public class Parser extends DefaultHandler{
         }
         String second = name.substring(i+1);
         return new FullName(first, second);
+    }
+
+    private String cutTabs(String word) {
+        if(word.startsWith(" ")) {
+            word = word.substring(1);
+        }
+        if(word.endsWith(" ")) {
+            word = word.substring(0, word.length()-1);
+        }
+        return word.replace("  ", " ");
     }
 
 

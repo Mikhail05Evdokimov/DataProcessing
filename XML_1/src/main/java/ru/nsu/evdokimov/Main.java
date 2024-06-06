@@ -50,7 +50,6 @@ public class Main {
             throw new JAXBException(e);
         }
 
-
     }
 
 }

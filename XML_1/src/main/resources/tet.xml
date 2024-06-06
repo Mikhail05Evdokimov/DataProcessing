@@ -2,6 +2,9 @@
     <person id="P407900">
         <firstname>Chantal</firstname>
         <children-number value="0"/>
+        <father>Ladonna Lown</father>
+        <mother>Mother CLown</mother>
+        <brother>P2626262 P26262662</brother>
     </person>
     <person id="P407900">
         <family-name>Lown</family-name>

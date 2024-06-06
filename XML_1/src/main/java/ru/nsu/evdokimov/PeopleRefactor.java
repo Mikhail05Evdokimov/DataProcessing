@@ -2,70 +2,82 @@ package ru.nsu.evdokimov;
 
 import ru.nsu.evdokimov.data.Person;
 import ru.nsu.evdokimov.data.Persons;
+import ru.nsu.evdokimov.data.Relative;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class PeopleRefactor {
 
     private final Persons persons;
 
-    private final List<Person> newPeopleList = new ArrayList<>();
+    private final Map<String, Person> newPeopleList = new HashMap<>();
 
     public PeopleRefactor(Persons persons) {
+        System.out.println("Start refactoring");
         this.persons = persons;
     }
 
     public void startRefactor() {
-        System.out.println("Start refactoring");
-        newPeopleList.addAll(persons.getAllPeople());
-        persons.clear();
         System.out.println("Start Clone check");
-        for (int i = 0; i < newPeopleList.size(); i++) {
-            for (int j = i+1; j < newPeopleList.size(); j++) {
-                if (!Objects.equals(newPeopleList.get(j).id, "NULL")) {
+        for (int i = 0; i < persons.size(); i++) {
+            for (int j = i+1; j < persons.size(); j++) {
+                if (!Objects.equals(persons.get(j).id, "NULL")) {
                     cloneCheck(i, j);
                 }
             }
         }
-        newPeopleList.removeIf(i -> Objects.equals(i.id, "NULL"));
+        persons.removeIf(i -> Objects.equals(i.id, "NULL"));
 
         System.out.println("Clone check finished");
 
-        newPeopleList.parallelStream().forEach(this:: selfCheck);
+        persons.people.parallelStream().forEach(this::selfCheck);
         int deleteCounter = 0;
-        for (var pep : newPeopleList) {
-            if (pep.id == null) {
-                deleteCounter++;
+        try (FileWriter fileWriter = new FileWriter("deleted.txt")) {
+            for (var pep : persons.people) {
+                if (pep.id == null) {
+                    deleteCounter++;
+                    if (pep.name != null) {
+                        fileWriter.write(pep.name.firstName + " " + pep.name.familyName + "\n");
+                    }
+                }
             }
+        } catch (IOException e) {
+            System.out.println("Writing error");
         }
         System.out.println("No ID deleted: " + deleteCounter);
-        newPeopleList.removeIf(i -> Objects.equals(i.id, null));
+        persons.removeIf(i -> Objects.equals(i.id, null));
 
         System.out.println("Self check finished");
 
-        for (int i = 0; i < newPeopleList.size(); i++) {
-            for (int j = 0; j < newPeopleList.size(); j++) {
-                if (i != j) {
+        for (Person p : persons.people) {
+            newPeopleList.put(p.id, p);
+        }
+
+        for (Person i : newPeopleList.values()) {
+            for (Person j : newPeopleList.values()) {
+                if (!Objects.equals(i, j)) {
                     husbandCheck(i, j);
                     wifeCheck(i, j);
                     childCheck(i, j);
                 }
             }
-            siblingsCheck(newPeopleList.get(i));
+            siblingsCheck(i);
         }
         System.out.println("Relative check finished");
 
-        newPeopleList.forEach(this::deepChildCheck);
+        newPeopleList.values().forEach(this::deepChildCheck);
 
         System.out.println("Deep relative check finished");
 
-        newPeopleList.parallelStream().forEach(this::nullCheck);
+        newPeopleList.values().parallelStream().forEach(this::nullCheck);
 
         System.out.println("Null check finished");
 
-        newPeopleList.parallelStream().forEach(this::doubleParentCheck);
+        newPeopleList.values().parallelStream().forEach(this::doubleParentCheck);
 
-        persons.setPeople(newPeopleList);
+        persons.setPeople(newPeopleList.values().stream().toList());
     }
 
     private void merge(Person a, Person b) {
@@ -100,8 +112,8 @@ public class PeopleRefactor {
     }
 
     private void cloneCheck(int i, int j) {
-        var a = newPeopleList.get(i);
-        var b = newPeopleList.get(j);
+        var a = persons.get(i);
+        var b = persons.get(j);
         if ((Objects.equals(a.id, b.id) && a.id != null)
             || (Objects.equals(a.name.firstName, b.name.firstName)
             && Objects.equals(a.name.familyName, b.name.familyName))
@@ -119,23 +131,30 @@ public class PeopleRefactor {
     }
 
     private void selfCheck(Person p) {
-        List<String> trash = new ArrayList<>();
+        List<Relative> trash = new ArrayList<>();
+        var family = p.family.others;
+        for (int i = 0; i < family.size(); i++) {
+            var member = family.get(i);
+            if (Objects.equals(member.getValue1(), "UNKNOWN")
+                || Objects.equals(member.getValue1(), "NONE")) {
+                trash.add(member);
+            }
+            if (member.getValue1().matches(".*\\d.*") && member.getValue1().contains(" ")) {
+                trash.add(member);
+                for(var newMem : member.getValue1().split(" ")) {
+                    p.family.others.add(new Relative(member.getKey(), newMem));
+                }
+            }
+        }
         if (p.id != null) {
-            for (var i : p.family.others.keySet()) {
-                if (Objects.equals(p.family.others.get(i), p.id)) {
-                    //p.family.others.remove(i); // OK? // NOT OK, damn
+            for (var i : family) {
+                if (Objects.equals(i.getValue1(), p.id)) {
                     trash.add(i);
                 }
             }
         }
-        for (var i : p.family.others.keySet()) {
-            if (Objects.equals(p.family.others.get(i), "UNKNOWN")
-                || Objects.equals(p.family.others.get(i), "NONE")) {
-                trash.add(i);
-            }
-        }
         for (var i : trash) {
-            p.family.others.removeByKey(i);
+            p.family.others.remove(i);
         }
         p.family.children.removeIf(i -> Objects.equals(i.name, p.id));
         if (p.gender != null) {
@@ -146,53 +165,51 @@ public class PeopleRefactor {
         }
     }
 
-    private void wifeCheck(int i, int j) {
-        if (Objects.equals(newPeopleList.get(i).id, newPeopleList.get(j).family.others.get("husband")) &&
-            !(newPeopleList.get(i).family.others.containsKey("wife"))) {
-                newPeopleList.get(i).family.others.put("wife", newPeopleList.get(j).id);
+    private void wifeCheck(Person i, Person j) {
+        if (Objects.equals(i.id, j.family.others.get("husband")) &&
+            !(i.family.others.containsKey("wife"))) {
+                i.family.others.put("wife", j.id);
         }
     }
 
-    private void husbandCheck(int i, int j) {
-        if (Objects.equals(newPeopleList.get(i).id, newPeopleList.get(j).family.others.get("wife")) &&
-            !(newPeopleList.get(i).family.others.containsKey("husband"))) {
-                newPeopleList.get(i).family.others.put("husband", newPeopleList.get(j).id);
+    private void husbandCheck(Person i, Person j) {
+        if (Objects.equals(i.id, j.family.others.get("wife")) &&
+            !(i.family.others.containsKey("husband"))) {
+                i.family.others.put("husband", j.id);
         }
     }
 
-    private void childCheck(int i, int j) {
-        var a = newPeopleList.get(i);
-        var b = newPeopleList.get(j);
-        if (Objects.equals(a.id, b.family.others.get("father")) ||
-            Objects.equals(a.id, b.family.others.get("mother")) ||
-            Objects.equals(a.id, b.family.others.get("parent"))){
-            if (b.id != null) {
-                if (Objects.equals(b.gender, "M")) {
-                    a.family.addChild("son", b.id);
+    private void childCheck(Person i, Person j) {
+        if (Objects.equals(i.id, j.family.others.get("father")) ||
+            Objects.equals(i.id, j.family.others.get("mother")) ||
+            Objects.equals(i.id, j.family.others.get("parent"))){
+            if (j.id != null) {
+                if (Objects.equals(j.gender, "M")) {
+                    i.family.addChild("son", j.id);
                 }
                 else {
-                    if (Objects.equals(b.gender, "F")) {
-                        a.family.addChild("daughter", b.id);
+                    if (Objects.equals(j.gender, "F")) {
+                        i.family.addChild("daughter", j.id);
                     }
                     else {
-                        a.family.addChild("child", b.id);
+                        i.family.addChild("child", j.id);
                     }
                 }
             }
         }
         else {
-            if (Objects.equals(a.id, b.family.findChild("daughter")) ||
-                Objects.equals(a.id, b.family.findChild("son")) ||
-                Objects.equals(a.id, b.family.findChild("child"))) {
-                if (Objects.equals(b.gender, "M")) {
-                    a.addMember("father", b.id);
+            if (Objects.equals(i.id, j.family.findChild("daughter")) ||
+                Objects.equals(i.id, j.family.findChild("son")) ||
+                Objects.equals(i.id, j.family.findChild("child"))) {
+                if (Objects.equals(j.gender, "M")) {
+                    i.addMember("father", j.id);
                 }
                 else {
-                    if (Objects.equals(b.gender, "F")) {
-                        a.addMember("mother", b.id);
+                    if (Objects.equals(j.gender, "F")) {
+                        i.addMember("mother", j.id);
                     }
                     else {
-                        a.addMember("parent", b.id);
+                        i.addMember("parent", j.id);
                     }
                 }
             }
@@ -316,16 +333,11 @@ public class PeopleRefactor {
 
 
     public Person findById(String id) {
-        for (var i : newPeopleList) {
-            if (Objects.equals(i.id, id)) {
-                return i;
-            }
-        }
-        return null;
+        return newPeopleList.getOrDefault(id, null);
     }
 
     public Person findByName(String name) {
-        for (var i : newPeopleList) {
+        for (var i : newPeopleList.values()) {
             if (Objects.equals(i.name.firstName + ' ' + i.name.familyName, name)) {
                 return i;
             }
