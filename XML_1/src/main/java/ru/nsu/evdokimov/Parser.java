@@ -9,7 +9,6 @@ import ru.nsu.evdokimov.data.Persons;
 public class Parser extends DefaultHandler{
 
     private Person person;
-    private FullName fullName;
     private String mock;
     private final Persons persons;
 
@@ -28,7 +27,7 @@ public class Parser extends DefaultHandler{
         switch (qName) {
             case "person":
                 person = new Person();
-                fullName = new FullName();
+                person.name = new FullName();
                 if (attributes.getValue("id") != null) {
                     person.setId(attributes.getValue("id"));
                 }
@@ -37,7 +36,6 @@ public class Parser extends DefaultHandler{
                 }
                 break;
             case "fullname":
-                fullName = new FullName();
                 break;
             case "wife":
                 if (attributes.getValue(0) != null) {
@@ -56,8 +54,7 @@ public class Parser extends DefaultHandler{
                 break;
             case "surname":
                 if (attributes.getValue(0) != null) {
-                    fullName.setFamilyName(cutTabs(attributes.getValue(0)));
-                    person.setName(fullName);
+                    person.name.setFamilyName(cutTabs(attributes.getValue(0)));
                 }
                 break;
             case "children-number":
@@ -92,8 +89,7 @@ public class Parser extends DefaultHandler{
                 break;
             case "firstname":
                 if (attributes.getValue(0) != null) {
-                    fullName.setFirstName(cutTabs(attributes.getValue(0)));
-                    person.setName(fullName);
+                    person.name.setFirstName(cutTabs(attributes.getValue(0)));
                 }
                 break;
             case "daughter":
@@ -133,10 +129,9 @@ public class Parser extends DefaultHandler{
         mock = cutTabs(mock);
 
         switch (qName) {
-            case "person" -> { person.setName(fullName); persons.addPerson(person); }
-            case "fullname" -> person.setName(fullName);
-            case "first", "firstname" -> fullName.setFirstName(mock);
-            case "family", "surname", "family-name" -> fullName.setFamilyName(mock);
+            case "person" -> { persons.addPerson(person); }
+            case "first", "firstname" -> person.name.setFirstName(mock);
+            case "family", "surname", "family-name" -> person.name.setFamilyName(mock);
             case "wife" -> person.addMember("wife", mock);
             case "husband" -> person.addMember("husband", mock);
             case "mother" -> person.addMember("mother", mock);
@@ -164,17 +159,14 @@ public class Parser extends DefaultHandler{
 
     private FullName nameParser(String name) {
         name = cutTabs(name);
-        String first = "";
-        int i = 0;
-        while (name.charAt(i) != ' ') {
-            first = first.concat(String.valueOf(name.charAt(i)));
-            i++;
-        }
+        int i = name.indexOf(" ");
+        String first = name.substring(0, i);
         String second = name.substring(i+1);
         return new FullName(first, second);
     }
 
     private String cutTabs(String word) {
+        word = word.replace("  ", " ");
         if(word.startsWith(" ")) {
             word = word.substring(1);
         }

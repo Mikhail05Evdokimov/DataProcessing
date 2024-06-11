@@ -26,10 +26,34 @@ public class Person {
 
     public void addMember(String member, String value) {
         if (!(value.contains("\n"))) {
-            if (family.others.checkAll(value) && !(family.others.containsKey("parent"))) {
+            if (family.others.checkAll(value)) {
                 family.others.put(member, value);
             }
         }
+    }
+
+    public int getCurrentSiblings() {
+        int cnt = 0;
+        for (var r : this.family.others) {
+            switch (r.getKey()) {
+                case "sibling", "siblings", "brother", "sister" -> {
+                    if (!r.getValue1().contains(" ")) {
+                        cnt++;
+                    }
+                }
+            }
+        }
+        return cnt;
+    }
+
+    public int getCurrentChildren() {
+        int cnt = 0;
+        for (var c : this.family.children) {
+            if (!c.name.contains(" ")) {
+                cnt++;
+            }
+        }
+        return cnt;
     }
 
     public void addChild(String member, String value) {

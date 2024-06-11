@@ -1,0 +1,28 @@
+<gg>
+    <person name="Tonya Loschiavo">
+        <id value="P390327"/>
+        <siblings val="P390329"/>
+    </person>
+    <person name=" Tonya Loschiavo">
+        <siblings val="P385166"/>
+        <parent>UNKNOWN</parent>
+        <parent>UNKNOWN</parent>
+        <gender value="male"/>
+    </person>
+    <person name="Tonya Loschiavo">
+        <children>
+            <daughter id="P397889"/>
+        </children>
+        <firstname value="Tonya"/>
+        <gender>M</gender>
+    </person>
+    <person name="Tonya Loschiavo">
+        <id value="P385164"/>
+        <surname value="Loschiavo"/>
+        <children-number value="0"/>
+    </person>
+    <person name="Tonya Loschiavo">
+        <siblings val="P390329"/>
+    </person>
+
+</gg>

@@ -12,6 +12,11 @@ public class FullName {
 
     public FullName() {}
 
+    @Override
+    public String toString() {
+        return this.firstName + " " + this.familyName;
+    }
+
     public void setFirstName(String name) {
         if (!(name.contains("\n"))) {
             firstName = name;
