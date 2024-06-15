@@ -1,0 +1,66 @@
+<gg>
+  <person id="#787878">
+    <gender>F</gender>
+    <fullname>
+      <first>Jonna</first>
+      <family>Chockley</family>
+    </fullname>
+  <parent>old man</parent>
+  </person>
+  <person>
+    <fullname>
+      <first>Jonna</first>
+      <family>Chockley</family>
+    </fullname>
+    <firstname value="Jonna"/>
+    <husband value="P407551"/>
+  </person>
+  <person id="00000">
+    <gender>M</gender>
+    <fullname>
+      <first>SON</first>
+      <family>MAN</family>
+    </fullname>
+    <mother>#787878</mother>
+  </person>
+  <person id="11111">
+    <gender>F</gender>
+    <fullname>
+      <first>DAUGHTER</first>
+      <family>MAN</family>
+    </fullname>
+    <father>P407551</father>
+    <brother>00000</brother>
+  </person>
+  <person id="P407551">
+    <gender>M</gender>
+    <fullname>
+      <first>man(man)</first>
+      <family>MAN</family>
+    </fullname>
+  </person>
+  <person id="228337">
+    <gender>M</gender>
+    <fullname>
+      <first>jora</first>
+      <family>ye</family>
+    </fullname>
+    <son>228337</son>
+  </person>
+  <person id="228337">
+    <husband value="228337"/>
+    <wife value="228337"/>
+  </person>
+  <person id="old man">
+    <firstname>Old Man</firstname>
+    <daughter>#787878</daughter>
+  </person>
+  <person id="old women">
+    <firstname>Old Women</firstname>
+    <daughter>#787878</daughter>
+  </person>
+  <person id="old man">
+    <firstname>Old Man</firstname>
+    <daughter>#787878</daughter>
+  </person>
+</gg>
