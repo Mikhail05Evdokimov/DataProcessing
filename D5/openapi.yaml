@@ -1,0 +1,424 @@
+openapi: 3.0.3
+info:
+  title: AviaSales
+  version: 1.0.0
+servers:
+  - url: 'localhost:8080'
+
+tags:
+  - name: locations
+  - name: schedules
+  - name: routes
+  
+
+paths:
+  /locations/cities:
+    get:
+      deprecated: false
+      tags:
+        - locations
+      summary: to get all cities
+      parameters:
+      - name: language
+        in: query
+        required: false
+        schema:
+          type: string
+          example: ru
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/City'
+                  
+  /locations/airports:
+    get:
+      deprecated: false
+      tags:
+        - locations
+      summary: to get all airports
+      parameters:
+      - name: language
+        in: query
+        required: false
+        schema:
+          type: string
+          example: ru
+      - name: pagination
+        in: query
+        required: false
+        schema:
+          type: integer
+          example: ru
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          example: ru
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/Airport'
+                  
+  /locations/airports/{city}:
+    get:
+      tags:
+        - locations
+      summary: to get all airports in a {city}
+      parameters:
+      - name: city
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Moscow
+      - name: language
+        in: query
+        required: false
+        schema:
+          type: string
+          example: ru
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/Airport'
+        404:
+          description: No such city
+                  
+  /schedules/inbound/{airport}:
+    get:
+      tags:
+        - schedules
+      summary: to get inbound schedules to the {airport}
+      parameters:
+      - name: airport
+        in: path
+        required: true
+        schema:
+          type: string
+          example: SVO
+      - name: day
+        in: query
+        required: false
+        schema:
+          type: string
+          example: 2017-07-18
+      - name: origin
+        in: query
+        required: false
+        schema:
+          type: string
+          example: SVO
+      - name: flight_number
+        in: query
+        required: false
+        schema:
+          type: string
+          example: PG0360
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/Schedule'
+        404:
+          description: No such airport
+        402:
+          description: Bad parameters
+          
+  /schedules/outbound/{airport}:
+    get:
+      tags:
+        - schedules
+      summary: to get outbound schedules from the {airport}
+      parameters:
+      - name: airport
+        in: path
+        required: true
+        schema:
+          type: string
+          example: SVO
+      - name: day
+        in: query
+        required: false
+        schema:
+          type: string
+          example: 2017-07-18
+      - name: destination
+        in: query
+        required: false
+        schema:
+          type: string
+          example: SVO
+      - name: flight_number
+        in: query
+        required: false
+        schema:
+          type: string
+          example: PG0360
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/Schedule'
+        404:
+          description: No such airport
+        402:
+          description: Bad parameters
+          
+  /routes:
+    get:
+      tags:
+        - routes
+      summary: to get a list of routes from A to B points
+      parameters:
+      - name: start_point
+        in: query
+        required: true
+        schema:
+          type: string
+          example: SVO
+      - name: end_point
+        in: query
+        required: true
+        schema:
+          type: string
+          example: Novosibirsk
+      - name: day
+        in: query
+        required: true
+        schema:
+          type: string
+          example: 2017-07-18
+      - name: class
+        in: query
+        required: false
+        schema:
+          type: string
+          example: Economy
+      - name: connections
+        in: query
+        required: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/Route'
+        402:
+          description: Bad parameters
+          
+  /book:
+    post:
+      tags:
+        - routes
+      summary: to book a tiket for a route
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                booking:
+                    $ref: '#/Booking'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  booking:
+                    $ref: '#/BookRef'
+        202:
+          description: No seatplace
+        402:
+          description: Bad parameters
+        500:
+          description: Internal server error
+          
+  /check-in:
+    post:
+      tags:
+        - routes
+      summary: online check-in
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                booking:
+                  $ref: '#/BookRef'
+                phone_number:
+                  type: string
+                  example: +79998887766
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  book_ref:
+                    $ref: '#/BoardingPass'
+        404:
+          description: No such booking
+                        
+City:
+  type: object
+  properties:
+    name:
+      type: string
+      example: Novosibirsk
+    timezone:
+      type: string
+      example: Europe/Moscow
+        
+
+Airport:
+  type: object
+  properties:
+    code:
+      type: string
+      example: SVO
+    name:
+      type: string
+      example: Sheremetevo
+    city:
+      type: string
+      example: Moscow
+    timezone:
+      type: string
+      example: Europe/Moscow
+      
+Schedule:
+  type: object
+  properties:
+    flight_number:
+      type: string
+      example: PG0019
+    origin_or_destination:
+      type: string
+      example: SVO/Moscow
+    arrival_time:
+      type: date-time
+      example: 2017-07-18 23:30:00.000
+    day_of_week:
+      type: string
+      example: Monday
+      
+Route:
+  type: object
+  properties:
+    flight_id:
+      type: integer
+      example: 17173
+    flight_number:
+      type: string
+      example: PG0019
+    origin:
+      type: string
+      example: SVO/Moscow
+    destination:
+      type: string
+      example: OVB/Novosibirsk
+    departure_time:
+      type: date-time
+      example: 2017-07-18 23:30:00.000
+    arrival_time:
+      type: date-time
+      example: 2017-07-19 09:30:00.000
+    class:
+      type: string
+      example: Economy
+    price:
+      type: integer
+      example: 29000
+      
+User:
+  type: object
+  properties:
+    full_name:
+      type: string
+      example: Evdokimov M P
+    phone_number:
+      type: string
+      example: +79998887766
+    email:
+      type: string
+      example: exapmle@gmail.com
+      
+Booking:
+  type: object
+  properties:
+    user:
+      $ref: '#/User'
+    flights:
+      type: array
+      items:
+        type: integer
+        example: 17173
+      
+BookRef:
+  type: object
+  properties:
+    book_ref:
+      type: string
+      example: 06B046
+    tickets:
+      type: array
+      items:
+        ticket_no:
+          type: string
+          example: 0005432000987
+   
+  
+BoardingPass:
+  type: object
+  properties:
+    flight_number:
+      type: string
+      example: PG0019
+    seat_place:
+      type: string
+      example: 11A
+    origin:
+      type: string
+      example: SVO/Moscow
+    destination:
+      type: string
+      example: OVB/Novosibirsk
+    departure_time:
+      type: date-time
+      example: 2017-07-18 23:30:00.000
