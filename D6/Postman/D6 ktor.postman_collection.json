@@ -1,0 +1,42 @@
+{
+	"info": {
+		"_postman_id": "70417c7c-1924-44d7-a551-6a2581b2dd40",
+		"name": "D6 ktor",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28412843"
+	},
+	"item": [
+		{
+			"name": "airports",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "cities",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "airports in city",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "inbound",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
