@@ -1,10 +1,17 @@
 package app.repository.data
 
-import java.sql.Time
+import java.sql.Timestamp
 
-data class Schedule(
+data class InSchedule(
     val raceNumber : String,
-    val originOrDestination : String,
+    val origin : String,
     val dayOfWeek : String,
-    val time: Time,
+    val time: Timestamp,
+)
+
+data class OutSchedule(
+    val raceNumber : String,
+    val destination : String,
+    val dayOfWeek : String,
+    val time: Timestamp,
 )
